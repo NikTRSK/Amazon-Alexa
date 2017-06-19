@@ -2,6 +2,7 @@
 # import html from lxml
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
+import json
 
 class RedCarpetScraper:
     mBaseURL = "http://www.eonline.com"
@@ -47,30 +48,25 @@ class RedCarpetScraper:
 
     # Inspects the source of the webpage to get the script data and get the json response
     def getGallery(self, url):
-        import re
         link = urlopen(url)
-        # html = BeautifulSoup(link.read(), "lxml")
-        # print(html.prettify().encode("utf-8"))
-        f = open('text.txt', 'w')
+        f = open('text.json', 'w')
         html = link.read()
         res = BeautifulSoup(html, "lxml")
-        # f.write(html)
-        # f.write(res.find_all('script'))
-        # print(res.script.images)
-        # f.write(res.encode("utf-8"))
-        results = res.find_all('script')
-        # pattern = re.compile('images: \[\s+(.*\s)+};')
-        regex = r"images: \[\s+(.*\s)+};"
-        # t = pattern.findall(str(res))
-        # print(t)
-        for script in results:
+        scripts = res.find_all('script')
+        # regex = r"images: \[\s+(.*\s)+};"
+        for script in scripts:
             if r"window.HHCAROUSEL_DATA" in str(script):
-                # print(script)
-                print(type(script.text))
                 s = script.text
                 start = s.find(r"window.HHCAROUSEL_DATA")
                 end = s.find(r" //end of HHCAROUSEL_DATA")
-                f.write(s[start:end])
+                wholeObj = s[start + len(r"window.HHCAROUSEL_DATA = "):end]
+                imagesBegin = wholeObj.find(r"images: ")
+                rawData = wholeObj[imagesBegin + len(r"images: "):-4]
+                rawData = rawData.replace(r"'", r'"')
+                jsonData = json.loads(rawData)
+                f.write(json.dumps(jsonData))
+                print(len(jsonData))
+                # f.write(rawData)
                 break
 
     def printURLS(self):
