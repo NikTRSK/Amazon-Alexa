@@ -3,6 +3,7 @@
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import json
+import re
 
 class RedCarpetScraper:
     mBaseURL = "http://www.eonline.com"
@@ -34,7 +35,7 @@ class RedCarpetScraper:
             self.getEvent(value)
 
     def getEvent(self, url):
-        print("GETTING ", url)
+        # print("GETTING ", url)
         matchTerm = "red carpet arrivals"
         link = urlopen(url)
         html = BeautifulSoup(link.read(), "lxml")
@@ -46,14 +47,29 @@ class RedCarpetScraper:
                 showName = galerryItem.text[:pos]
                 self.mEvents[showName.strip()] = self.mBaseURL + galerryItem['href']
 
+    def getRedCarpetArrivals(self):
+        for key, value in self.mEventURLs.items():
+            self.getRedCarpetArrival(value)
+            break
+
+    def getRedCarpetArrival(self, url):
+        link = urlopen(url)
+        html = BeautifulSoup(link.read(), "lxml")
+        # galleries = html.find("div", {"id": "category-news-list-1"})
+        galleries = html.find("ul", {"id": "gallery-list1", "class": "category-gallery-list clear"})
+        for gallery in galleries:
+            # galleryTitle = gallery.find('span')
+            # print(galleryTitle)
+            if gallery.find('span') is not -1:
+                print(gallery.find('span').text)
+            # break
+
     # Inspects the source of the webpage to get the script data and get the json response
     def getGallery(self, url):
         link = urlopen(url)
-        f = open('text.json', 'w')
         html = link.read()
         res = BeautifulSoup(html, "lxml")
         scripts = res.find_all('script')
-        # regex = r"images: \[\s+(.*\s)+};"
         for script in scripts:
             if r"window.HHCAROUSEL_DATA" in str(script):
                 s = script.text
@@ -64,10 +80,16 @@ class RedCarpetScraper:
                 rawData = wholeObj[imagesBegin + len(r"images: "):-4]
                 rawData = rawData.replace(r"'", r'"')
                 jsonData = json.loads(rawData)
-                f.write(json.dumps(jsonData))
-                print(len(jsonData))
-                # f.write(rawData)
+                title = self.getFullTitle(s)
+                # f.write(json.dumps(jsonData, indent=2, sort_keys=True))
+                with open(title+".json", "w") as f:
+                    f.write(json.dumps(jsonData, indent=2, sort_keys=True))
                 break
+
+    def getFullTitle(self, tagData):
+        selectTitlePattern = r'title: "(.*)"'
+        title = re.search(selectTitlePattern, tagData)
+        return title.group(1)
 
     def printURLS(self):
         for key, value in self.mEventURLs.items():
@@ -78,9 +100,10 @@ class RedCarpetScraper:
             print(key, value)
 
 scraper = RedCarpetScraper()
-# scraper.getMenus()
-# scraper.getEvents()
+scraper.getMenus()
+scraper.getEvents()
 # scraper.printURLS()
 tempURL = "http://www.eonline.com/photos/20157/oscars-2017-red-carpet-arrivals/745952"
-temoURLSource = "view-source:http://www.eonline.com/photos/20157/oscars-2017-red-carpet-arrivals/745952"
-scraper.getGallery(tempURL)
+# scraper.getGallery(tempURL)
+# print (scraper.mEventURLs)
+scraper.getRedCarpetArrivals()
