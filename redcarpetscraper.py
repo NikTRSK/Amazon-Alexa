@@ -61,8 +61,11 @@ class RedCarpetScraper:
             # galleryTitle = gallery.find('span')
             # print(galleryTitle)
             if gallery.find('span') is not -1:
-                print(gallery.find('span').text)
-            # break
+                # print(gallery.find('span').text.lower())
+                if "arrivals" in gallery.find('span').text.lower():
+                    print(gallery.find('span').text)
+                    print(self.mBaseURL + gallery.find('a', href=True)['href'])
+                    break
 
     # Inspects the source of the webpage to get the script data and get the json response
     def getGallery(self, url):
