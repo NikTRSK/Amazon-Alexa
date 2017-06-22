@@ -50,21 +50,16 @@ class RedCarpetScraper:
     def getRedCarpetArrivals(self):
         for key, value in self.mEventURLs.items():
             self.getRedCarpetArrival(value)
-            break
 
     def getRedCarpetArrival(self, url):
         link = urlopen(url)
         html = BeautifulSoup(link.read(), "lxml")
-        # galleries = html.find("div", {"id": "category-news-list-1"})
         galleries = html.find("ul", {"id": "gallery-list1", "class": "category-gallery-list clear"})
         for gallery in galleries:
-            # galleryTitle = gallery.find('span')
-            # print(galleryTitle)
             if gallery.find('span') is not -1:
-                # print(gallery.find('span').text.lower())
                 if "arrivals" in gallery.find('span').text.lower():
-                    print(gallery.find('span').text)
-                    print(self.mBaseURL + gallery.find('a', href=True)['href'])
+                    galleryURL = self.mBaseURL + gallery.find('a', href=True)['href']
+                    self.getGallery(galleryURL)
                     break
 
     # Inspects the source of the webpage to get the script data and get the json response
@@ -84,7 +79,8 @@ class RedCarpetScraper:
                 rawData = rawData.replace(r"'", r'"')
                 jsonData = json.loads(rawData)
                 title = self.getFullTitle(s)
-                # f.write(json.dumps(jsonData, indent=2, sort_keys=True))
+                title = title.replace("\\", r'').replace(r':', r'')
+                print(title)
                 with open(title+".json", "w") as f:
                     f.write(json.dumps(jsonData, indent=2, sort_keys=True))
                 break
@@ -92,7 +88,9 @@ class RedCarpetScraper:
     def getFullTitle(self, tagData):
         selectTitlePattern = r'title: "(.*)"'
         title = re.search(selectTitlePattern, tagData)
-        return title.group(1)
+        title = title.group(1)
+        title = title.replace("Red Carpet Arrivals", "").lstrip()
+        return title
 
     def printURLS(self):
         for key, value in self.mEventURLs.items():
@@ -106,7 +104,7 @@ scraper = RedCarpetScraper()
 scraper.getMenus()
 scraper.getEvents()
 # scraper.printURLS()
-tempURL = "http://www.eonline.com/photos/20157/oscars-2017-red-carpet-arrivals/745952"
+# tempURL = "http://www.eonline.com/photos/20157/oscars-2017-red-carpet-arrivals/745952"
 # scraper.getGallery(tempURL)
 # print (scraper.mEventURLs)
 scraper.getRedCarpetArrivals()
