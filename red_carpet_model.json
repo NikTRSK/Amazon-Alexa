@@ -1,0 +1,30 @@
+{
+  "intents": [{
+      "intent": "RedCarpet",
+      "slots": [{
+          "name": "Event",
+          "type": "LIST_OF_EVENTS"
+        },
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE"
+        }
+      ]
+    },
+    {
+      "intent": "MatchSign",
+      "slots": [{
+          "name": "FirstSign",
+          "type": "LIST_OF_SIGNS"
+        },
+        {
+          "name": "SecondSign",
+          "type": "LIST_OF_SIGNS"
+        }
+      ]
+    },
+    {
+      "intent": "GetLuckyNumbers"
+    }
+  ]
+}

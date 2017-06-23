@@ -1,0 +1,26 @@
+{
+  "intents": [
+    {
+      "intent": "RedCarpet",
+      "slots": [
+        {
+          "name": "Events",
+          "type": "LIST_OF_EVENTS"
+        },
+        {
+          "name": "Person",
+          "type": "LIST_OF_PEOPLE"
+        },
+        {
+          "brand": "Brand",
+          "type": "LIST_OF_BRANDS"
+        }
+      ]
+    }
+  ]
+}
+
+
+RedCarpet show me the available {Events}
+RedCarpet what did {Person} wear at {Events}
+RedCarpet what did {Person} wear this year

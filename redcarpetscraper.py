@@ -61,6 +61,7 @@ class RedCarpetScraper:
                     galleryURL = self.mBaseURL + gallery.find('a', href=True)['href']
                     self.getGallery(galleryURL)
                     break
+            # break # Remove
 
     # Inspects the source of the webpage to get the script data and get the json response
     def getGallery(self, url):
