@@ -1,0 +1,33 @@
+{
+  "intents": [
+    {
+      "intent": "RedCarpet",
+      "slots": [
+        {
+          "name": "Events",
+          "type": "LIST_OF_EVENTS"
+        },
+        {
+          "name": "Person",
+          "type": "LIST_OF_PEOPLE"
+        },
+        {
+          "name": "Brand",
+          "type": "LIST_OF_BRANDS"
+        }
+      ]
+    }
+  ]
+}
+
+
+RedCarpet show me the available {Events}
+RedCarpet what did {Person} wear at {Events}
+RedCarpet what did {Person} wear this year
+
+PEOPLE'S CHOICE AWARDS
+GOLDEN GLOBES
+SAG AWARDS
+GRAMMYS
+OSCARS
+EMMYS

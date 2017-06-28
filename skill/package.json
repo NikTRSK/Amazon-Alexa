@@ -1,16 +1,12 @@
 {
-  "name": "RedCarpet-Alexa",
-  "version": "0.0.1",
-  "main": "index.js",
-  "scripts": {
-    "start": "webpack-dev-server",
-    "test": "wdio wdio.conf.js",
-  },
-  "license": "ISC",
-  "dependencies": {
-    "alexa-sdk": "^1.0.10",
-    "chai": "^3.5.0",
-    "chai-http": "^2.0.1",
-    "mocha": "^3.4.2"
-  }
+    "name": "RedCarpet-Alexa",
+    "version": "0.0.1",
+    "main": "index.js",
+    "license": "ISC",
+    "dependencies": {
+        "alexa-sdk": "^1.0.10",
+        "chai": "^3.5.0",
+        "chai-http": "^2.0.1",
+        "mocha": "^3.4.2"
+    }
 }
