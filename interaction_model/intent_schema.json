@@ -1,0 +1,18 @@
+{
+    "intents": [{
+        "slots": [{
+                "name": "Events",
+                "type": "LIST_OF_EVENTS"
+            },
+            {
+                "name": "Person",
+                "type": "LIST_OF_PEOPLE"
+            },
+            {
+                "name": "Brand",
+                "type": "LIST_OF_BRANDS"
+            }
+        ],
+        "intent": "RedCarpet"
+    }]
+}

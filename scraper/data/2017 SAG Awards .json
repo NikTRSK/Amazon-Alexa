@@ -1,4 +1,4 @@
-[
+module.exports.SAG_AWARDS = [
   {
     "credit": "Jordan Strauss/Invision/AP",
     "data-omniture-title": "emma-stone",
