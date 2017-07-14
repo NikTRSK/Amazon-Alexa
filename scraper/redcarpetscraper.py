@@ -1,16 +1,22 @@
-#import requests
-# import html from lxml
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import json
 import re
+from html.parser import HTMLParser
+
+# Helper methods
+from helpers import remove_tags, remove_extra
 
 class RedCarpetScraper:
     mBaseURL = "http://www.eonline.com"
     mRedCarpetMenuURL = "/news/red_carpet"
     mEventURLs = {}
     mEvents = {}
+    decoder = HTMLParser()
     
+    def __init__(self, db):
+        self.db = db
+
     def getMenus(self):
         # Open the Red Carpet menu
         # Currently issues behind a corporate firewall
@@ -82,8 +88,23 @@ class RedCarpetScraper:
                 title = self.getFullTitle(s)
                 title = title.replace("\\", r'').replace(r':', r'')
                 print(title)
-                with open(title+".json", "w") as f:
-                    f.write(json.dumps(jsonData, indent=2, sort_keys=True))
+                title = ("".join([c for c in title if not c.isdigit()])).strip()
+                print(title)
+                print("DATA")
+                for eventItem in jsonData:
+                    brand = eventItem['description']
+                    brand = remove_tags(brand)
+                    if "&nbsp;" in brand:
+                        brand = ""
+                    brand = self.decoder.unescape(brand)
+                    # brand = remove_extra(brand)
+                    item = {
+                        "person": eventItem["title"],
+                        "event": title,
+                        "brand": brand,
+                        "image_url": eventItem["url"]
+                    }
+                    self.db(item)
                 break
 
     def getFullTitle(self, tagData):
@@ -101,11 +122,7 @@ class RedCarpetScraper:
         for key, value in self.mEvents.items():
             print(key, value)
 
-scraper = RedCarpetScraper()
-scraper.getMenus()
-scraper.getEvents()
-# scraper.printURLS()
-# tempURL = "http://www.eonline.com/photos/20157/oscars-2017-red-carpet-arrivals/745952"
-# scraper.getGallery(tempURL)
-# print (scraper.mEventURLs)
-scraper.getRedCarpetArrivals()
+    def run(self):
+        self.getMenus()
+        self.getEvents()
+        self.getRedCarpetArrivals()
